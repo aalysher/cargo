@@ -19,3 +19,6 @@ pgdata/
 
 # Playwright MCP тест-артефакты
 .playwright-mcp/
+
+# Local Netlify folder
+.netlify
