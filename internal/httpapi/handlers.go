@@ -63,6 +63,20 @@ func (h *Handler) authDev(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, authResp{Token: token, Profile: toProfile(cl)})
 }
 
+// telegramWebhook — POST /webhook/telegram: входящее обновление Bot API.
+// Проверяет secret-токен, принимает обновление (MVP: payment_successful и др.).
+func (h *Handler) telegramWebhook(w http.ResponseWriter, r *http.Request) {
+	if r.Header.Get("X-Telegram-Bot-Api-Secret-Token") != h.svc.Config().WebhookSecret {
+		writeErr(w, http.StatusUnauthorized, "invalid_token", "неверный secret")
+		return
+	}
+	var upd telegramUpdate
+	if !h.readJSON(w, r, &upd) {
+		return
+	}
+	writeJSON(w, http.StatusOK, map[string]any{"ok": true})
+}
+
 // me — профиль клиента.
 func (h *Handler) me(w http.ResponseWriter, r *http.Request) {
 	id, _ := clientIDFrom(r.Context())

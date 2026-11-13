@@ -33,6 +33,8 @@ func New(svc *service.Service, cfg *config.Config) http.Handler {
 
 	r.Route("/api/v1", func(r chi.Router) {
 		r.Post("/auth/telegram", h.authTelegram)
+		// Telegram webhook — публичный, проверка secret в хендлере.
+		r.Post("/webhook/telegram", h.telegramWebhook)
 		if cfg.Env == "dev" {
 			r.Post("/auth/dev", h.authDev)
 		}

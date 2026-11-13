@@ -17,6 +17,7 @@ type Config struct {
 	BotToken    string
 	BotUsername string
 	JWTSecret   string
+	WebhookSecret string
 
 	// InitDataMaxAge — максимальный возраст initData; 0 — не проверять (dev).
 	InitDataMaxAge time.Duration
@@ -34,6 +35,7 @@ func Load() *Config {
 		BotToken:       os.Getenv("BOT_TOKEN"),
 		BotUsername:    getenv("BOT_USERNAME", "cargo_demo_bot"),
 		JWTSecret:      getenv("JWT_SECRET", "dev-secret-change-me"),
+		WebhookSecret: getenv("WEBHOOK_SECRET", "dev-webhook-secret"),
 		InitDataMaxAge: time.Duration(getenvInt("INIT_DATA_MAX_AGE_SECONDS", 0)) * time.Second,
 		NotifyInterval: time.Duration(getenvInt("NOTIFY_INTERVAL_SECONDS", 5)) * time.Second,
 	}

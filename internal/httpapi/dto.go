@@ -40,6 +40,21 @@ type warehouseAddressResp struct {
 	ClientCode string `json:"client_code"`
 }
 
+// telegramUpdate — входящее обновление Bot API (из webhook).
+type telegramUpdate struct {
+	UpdateID int64 `json:"update_id"`
+	Message  *struct {
+		MessageID int64 `json:"message_id"`
+		Chat      struct {
+			ID int64 `json:"id"`
+		} `json:"chat"`
+		PaymentSuccessful *struct {
+			TelegramPaymentChargeID string `json:"telegram_payment_charge_id"`
+			InvoicePayload          string `json:"invoice_payload"`
+		} `json:"payment_successful"`
+	} `json:"message"`
+}
+
 type tariffResp struct {
 	TransportType   string  `json:"transport_type"`
 	PricePerKg      float64 `json:"price_per_kg"`
