@@ -1,4 +1,4 @@
-.PHONY: dev worker test vet build db-up db-down tidy admin admin-build
+.PHONY: dev worker test vet build db-up db-down tidy admin admin-build dev-all
 
 dev: ## запустить API (порт 8080, авто-миграции при старте)
 	go run ./cmd/api
@@ -17,6 +17,9 @@ admin: ## dev-сервер админки (порт 5176)
 
 admin-build: ## сборка админки (tsc + vite)
 	npm --prefix web/admin run build
+
+dev-all: ## полный локальный стек: db/api/worker/admin + tunnel + фронты
+	./scripts/dev.sh
 
 db-up: ## поднять Postgres
 	docker compose up -d db
