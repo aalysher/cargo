@@ -37,6 +37,44 @@ curl -s localhost:${APP_PORT:-8085}/api/v1/orders/1 -H "Authorization: Bearer $T
 curl -s -X POST localhost:${APP_PORT:-8085}/api/v1/orders/1/cancel -H "Authorization: Bearer $TOKEN"
 ```
 
+## Демо-доступ админки (часть 2)
+
+Сезонные демо-операторы сидируются миграцией `000003` — **в prod сменить пароли**:
+
+```sh
+docker exec cargo-db-1 psql -U cargo -d cargo \
+  -c "UPDATE admin_users SET password_hash='<bcrypt-хэш>' WHERE username IN ('admin','operator');"
+```
+
+| Логин | Пароль | Роль | Права |
+|---|---|---|---|
+| `admin` | `admin123` | admin | всё + правка тарифов и settings |
+| `operator` | `operator123` | operator | заказы, треки, клиенты (чтение) |
+
+## Эндпоинты админ-API
+
+```sh
+AT=$(curl -s -X POST localhost:${APP_PORT:-8085}/api/v1/admin/auth/login \
+  -H 'Content-Type: application/json' \
+  -d '{"username":"admin","password":"admin123"}' | python3 -c "import json,sys; print(json.load(sys.stdin)['token'])")
+
+curl -s "localhost:${APP_PORT:-8085}/api/v1/admin/orders?status=new&q=KG" -H "Authorization: Bearer $AT"
+curl -s localhost:${APP_PORT:-8085}/api/v1/admin/orders/2 -H "Authorization: Bearer $AT"          # деталь + таймлайн
+curl -s -X PATCH localhost:${APP_PORT:-8085}/api/v1/admin/orders/2 \
+  -H "Authorization: Bearer $AT" -H 'Content-Type: application/json' \
+  -d '{"actual_weight_kg":2.4}'                                                                    # вес → пересчёт цены
+curl -s -X POST localhost:${APP_PORT:-8085}/api/v1/admin/orders/2/status \
+  -H "Authorization: Bearer $AT" -H 'Content-Type: application/json' \
+  -d '{"status":"accepted","note":"забираем"}'                                                     # переход статуса
+curl -s -X POST localhost:${APP_PORT:-8085}/api/v1/admin/orders/2/tracks \
+  -H "Authorization: Bearer $AT" -H 'Content-Type: application/json' -d '{"tracking_number":"LBX123"}'
+curl -s localhost:${APP_PORT:-8085}/api/v1/admin/tariffs -H "Authorization: Bearer $AT"            # operator: только чтение
+curl -s -X PATCH localhost:${APP_PORT:-8085}/api/v1/admin/tariffs/1 \
+  -H "Authorization: Bearer $AT" -H 'Content-Type: application/json' -d '{"price_per_kg":2.95}'
+curl -s "localhost:${APP_PORT:-8085}/api/v1/admin/clients?q=SSZ" -H "Authorization: Bearer $AT"
+curl -s localhost:${APP_PORT:-8085}/api/v1/admin/settings -H "Authorization: Bearer $AT"
+```
+
 ## Прод (план)
 
 - `BOT_TOKEN` от @BotFather → уведомления ботом; `INIT_DATA_MAX_AGE_SECONDS=3600`.
@@ -48,6 +86,6 @@ curl -s -X POST localhost:${APP_PORT:-8085}/api/v1/orders/1/cancel -H "Authoriza
 | Часть | Содержание | Статус |
 |---|---|---|
 | 1 | Бэкенд-каркас: миграции, auth (Telegram initData), тарифы/калькулятор, заказы, outbox | ✅ |
-| 2 | Админ-API: статусы, вес, треки, тарифы, settings + dev-тарифы | ⏳ |
+| 2 | Админ-API: login, статусы, вес, треки, тарифы, settings, клиенты | ✅ |
 | 3 | TMA: онбординг, главная, калькулятор, заявка, заказы, таймлайн | ⏳ |
 | 4 | Админка (веб) + деплой | ⏳ |

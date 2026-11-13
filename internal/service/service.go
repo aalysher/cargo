@@ -19,6 +19,8 @@ type Service struct {
 	Notifications *repo.Notifications
 	Tariffs       *repo.Tariffs
 	Settings      *repo.Settings
+	Admins        *repo.Admins
+	AdminOrders   *repo.AdminOrders
 }
 
 // New конструирует сервис.
@@ -32,6 +34,8 @@ func New(pool *pgxpool.Pool, cfg *config.Config) *Service {
 		Notifications: repo.NewNotifications(pool),
 		Tariffs:       repo.NewTariffs(pool),
 		Settings:      repo.NewSettings(pool),
+		Admins:        repo.NewAdmins(pool),
+		AdminOrders:   repo.NewAdminOrders(pool),
 	}
 }
 

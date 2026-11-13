@@ -9,10 +9,17 @@ import (
 )
 
 // Роли в JWT.
-const RoleClient = "client"
+const (
+	RoleClient   = "client"
+	RoleOperator = "operator"
+	RoleAdmin    = "admin"
+)
 
 // clientSessionTTL — срок жизни клиентской сессии.
 const clientSessionTTL = 30 * 24 * time.Hour
+
+// adminSessionTTL — срок жизни сессии оператора/админа (короткая, безопасность).
+const adminSessionTTL = 12 * time.Hour
 
 // Claims — данные сессии (subject = id пользователя, role = роль).
 type Claims struct {
@@ -28,6 +35,19 @@ func NewClientToken(secret string, clientID int64) (string, error) {
 			Subject:   strconv.FormatInt(clientID, 10),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(clientSessionTTL)),
+		},
+	}
+	return jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString([]byte(secret))
+}
+
+// NewAdminToken выпускает JWT для оператора/админа (роль задаётся явно).
+func NewAdminToken(secret string, userID int64, role string) (string, error) {
+	claims := Claims{
+		Role: role,
+		RegisteredClaims: jwt.RegisteredClaims{
+			Subject:   strconv.FormatInt(userID, 10),
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(adminSessionTTL)),
 		},
 	}
 	return jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString([]byte(secret))

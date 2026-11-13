@@ -50,6 +50,14 @@ func (h *Handler) fail(w http.ResponseWriter, r *http.Request, err error) {
 			writeErr(w, http.StatusConflict, "invalid_transition", err.Error())
 			return
 		}
+		if errors.Is(err, domain.ErrUnauthorized) {
+			writeErr(w, http.StatusUnauthorized, "unauthorized", "неверный логин или пароль")
+			return
+		}
+		if errors.Is(err, domain.ErrForbidden) {
+			writeErr(w, http.StatusForbidden, "forbidden", "недостаточно прав")
+			return
+		}
 		slog.ErrorContext(r.Context(), "internal error", "err", err)
 		writeErr(w, http.StatusInternalServerError, "internal", "внутренняя ошибка")
 	}

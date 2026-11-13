@@ -49,6 +49,30 @@ func New(svc *service.Service, cfg *config.Config) http.Handler {
 			r.Get("/orders/{id}", h.getOrder)
 			r.Post("/orders/{id}/cancel", h.cancelOrder)
 		})
+
+		// --- Админ-API ---
+		r.Post("/admin/auth/login", h.adminLogin)
+
+		r.Group(func(r chi.Router) {
+			r.Use(AdminAuth(cfg.JWTSecret))
+			r.Get("/admin/orders", h.adminListOrders)
+			r.Get("/admin/orders/{id}", h.adminGetOrder)
+			r.Patch("/admin/orders/{id}", h.adminPatchOrder)
+			r.Post("/admin/orders/{id}/status", h.adminChangeStatus)
+			r.Post("/admin/orders/{id}/tracks", h.adminAddTrack)
+			r.Delete("/admin/orders/{id}/tracks/{trackID}", h.adminRemoveTrack)
+			r.Get("/admin/tariffs", h.adminListTariffs)
+			r.Get("/admin/clients", h.adminListClients)
+			r.Get("/admin/clients/{id}", h.adminGetClient)
+			r.Get("/admin/settings", h.adminGetSettings)
+
+			// Правки справочников — только роль admin.
+			r.Group(func(r chi.Router) {
+				r.Use(RequireAdminRole)
+				r.Patch("/admin/tariffs/{id}", h.adminPatchTariff)
+				r.Put("/admin/settings/{key}", h.adminPutSetting)
+			})
+		})
 	})
 
 	r.Get("/healthz", func(w http.ResponseWriter, _ *http.Request) {

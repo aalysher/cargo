@@ -101,6 +101,14 @@ func (o *Orders) GetForClient(ctx context.Context, id, clientID int64) (Order, e
 	return ord, err
 }
 
+// GetByID возвращает заказ по id (для админ-операций).
+func (o *Orders) GetByID(ctx context.Context, id int64) (Order, error) {
+	row := o.db.QueryRow(ctx, `SELECT `+orderCols+` FROM orders WHERE id = $1`, id)
+	var ord Order
+	err := scanOrder(row, &ord)
+	return ord, err
+}
+
 // ListByClient — постраничный список заказов клиента (cursor = id последнего элемента).
 // statuses пустой — все статусы. Возвращает nextCursor (0 — дальше страниц нет).
 func (o *Orders) ListByClient(ctx context.Context, clientID int64, statuses []string, cursor int64, limit int) ([]Order, int64, error) {

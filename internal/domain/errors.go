@@ -5,6 +5,12 @@ import "errors"
 // ErrNotFound — объект не найден (HTTP 404).
 var ErrNotFound = errors.New("not found")
 
+// ErrUnauthorized — неверные учётные данные (HTTP 401).
+var ErrUnauthorized = errors.New("unauthorized")
+
+// ErrForbidden — недостаточно прав (HTTP 403).
+var ErrForbidden = errors.New("forbidden")
+
 // ErrInvalidTransition — недопустимый переход статуса (HTTP 409).
 var ErrInvalidTransition = errors.New("invalid status transition")
 

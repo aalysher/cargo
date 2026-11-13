@@ -2,6 +2,7 @@ package repo
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"cargo/internal/auth"
@@ -64,4 +65,38 @@ func (c *Clients) UpdatePhone(ctx context.Context, id int64, phone string) error
 	_, err := c.db.Exec(ctx,
 		`UPDATE clients SET phone = nullif($2, ''), updated_at = now() WHERE id = $1`, id, phone)
 	return err
+}
+
+// ListForAdmin — поиск клиентов (телефон, код, username, имя) для админки.
+func (c *Clients) ListForAdmin(ctx context.Context, search string, limit int) ([]Client, error) {
+	q := `SELECT ` + clientCols + ` FROM clients WHERE true`
+	args := []any{}
+	ph := 1
+	if search != "" {
+		pattern := "%" + search + "%"
+		q += fmt.Sprintf(` AND (coalesce(phone, '') ILIKE $%d OR client_code ILIKE $%d
+			OR coalesce(username, '') ILIKE $%d OR first_name ILIKE $%d OR last_name ILIKE $%d)`,
+			ph, ph, ph, ph, ph)
+		args = append(args, pattern)
+		ph++
+	}
+	q += fmt.Sprintf(` ORDER BY id DESC LIMIT $%d`, ph)
+	args = append(args, limit)
+
+	rows, err := c.db.Query(ctx, q, args...)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var out []Client
+	for rows.Next() {
+		var cl Client
+		if err := rows.Scan(&cl.ID, &cl.TelegramID, &cl.Username, &cl.FirstName, &cl.LastName,
+			&cl.PhotoURL, &cl.Phone, &cl.ClientCode, &cl.CreatedAt); err != nil {
+			return nil, err
+		}
+		out = append(out, cl)
+	}
+	return out, rows.Err()
 }
