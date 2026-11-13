@@ -100,6 +100,17 @@ npm --prefix web/tma run dev      # http://localhost:5175
 - Боевой адрес API задаётся `VITE_API_URL` (по умолчанию `http://localhost:8085/api/v1`); сборка — `npm run build` (~83 КБ gzip).
 - Deep link из бота `t.me/<bot>?startapp=order_<id>` открывает карточку заказа.
 
+## Деплой (Docker Compose)
+
+```sh
+docker compose up -d --build   # поднимает db + api + worker + admin
+docker compose logs -f api
+```
+
+- API — http://localhost:8085, админка (nginx + статика) — http://localhost:8081, Postgres — :5432.
+- Миграции применяются автоматически при старте api (embed + golang-migrate).
+- В prod: `APP_ENV=prod`, реальный `BOT_TOKEN`, `INIT_DATA_MAX_AGE_SECONDS=3600`, свой `JWT_SECRET`.
+
 ## Прод (план)
 
 - `BOT_TOKEN` от @BotFather → уведомления ботом; `INIT_DATA_MAX_AGE_SECONDS=3600`.
