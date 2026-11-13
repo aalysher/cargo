@@ -1,4 +1,4 @@
-.PHONY: dev worker test vet build db-up db-down tidy
+.PHONY: dev worker test vet build db-up db-down tidy admin admin-build
 
 dev: ## запустить API (порт 8080, авто-миграции при старте)
 	go run ./cmd/api
@@ -11,6 +11,12 @@ tma: ## dev-сервер TMA (порт 5175)
 
 tma-build: ## сборка TMA (tsc + vite)
 	npm --prefix web/tma run build
+
+admin: ## dev-сервер админки (порт 5176)
+	npm --prefix web/admin run dev
+
+admin-build: ## сборка админки (tsc + vite)
+	npm --prefix web/admin run build
 
 db-up: ## поднять Postgres
 	docker compose up -d db

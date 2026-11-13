@@ -32,7 +32,6 @@ type adminOrderResp struct {
 	FinalCost          *float64         `json:"final_cost"`
 	Currency           string           `json:"currency"`
 	Comment            string           `json:"comment"`
-	Source             string           `json:"source"`
 	CreatedAt          string           `json:"created_at"`
 	UpdatedAt          string           `json:"updated_at"`
 	Client             adminClientBrief `json:"client"`

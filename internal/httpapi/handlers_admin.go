@@ -1,6 +1,7 @@
 package httpapi
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"strconv"
@@ -85,7 +86,12 @@ func (h *Handler) adminPatchOrder(w http.ResponseWriter, r *http.Request) {
 			h.fail(w, r, err)
 			return
 		}
-		writeJSON(w, http.StatusOK, toAdminOrderResp(ao, nil, nil))
+		ao, tracks, events, err := h.adminOrderFull(r.Context(), ao)
+		if err != nil {
+			h.fail(w, r, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, toAdminOrderResp(ao, tracks, events))
 		return
 	}
 
@@ -94,7 +100,26 @@ func (h *Handler) adminPatchOrder(w http.ResponseWriter, r *http.Request) {
 		h.fail(w, r, err)
 		return
 	}
-	writeJSON(w, http.StatusOK, toAdminOrderResp(ao, nil, nil))
+	ao, tracks, events, err := h.adminOrderFull(r.Context(), ao)
+	if err != nil {
+		h.fail(w, r, err)
+		return
+	}
+	writeJSON(w, http.StatusOK, toAdminOrderResp(ao, tracks, events))
+}
+
+// adminOrderFull — дотягивает треки и таймлайн к изменённому заказу,
+// чтобы клиент админки после мутации получал полную карточку.
+func (h *Handler) adminOrderFull(ctx context.Context, ao repo.AdminOrder) (repo.AdminOrder, []repo.OrderTrack, []repo.OrderEvent, error) {
+	tracks, err := h.svc.Orders.TracksByOrder(ctx, ao.ID)
+	if err != nil {
+		return repo.AdminOrder{}, nil, nil, err
+	}
+	events, err := h.svc.Events.ListForOrder(ctx, ao.ID)
+	if err != nil {
+		return repo.AdminOrder{}, nil, nil, err
+	}
+	return ao, tracks, events, nil
 }
 
 // adminChangeStatus — POST /admin/orders/{id}/status.
@@ -113,7 +138,12 @@ func (h *Handler) adminChangeStatus(w http.ResponseWriter, r *http.Request) {
 		h.fail(w, r, err)
 		return
 	}
-	writeJSON(w, http.StatusOK, toAdminOrderResp(ao, nil, nil))
+	ao, tracks, events, err := h.adminOrderFull(r.Context(), ao)
+	if err != nil {
+		h.fail(w, r, err)
+		return
+	}
+	writeJSON(w, http.StatusOK, toAdminOrderResp(ao, tracks, events))
 }
 
 // adminAddTrack — POST /admin/orders/{id}/tracks.

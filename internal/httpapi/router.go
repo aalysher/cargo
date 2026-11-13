@@ -27,7 +27,7 @@ func New(svc *service.Service, cfg *config.Config) http.Handler {
 	r.Use(cors.Handler(cors.Options{
 		// TMA открывается из доменов Telegram; для MVP разрешаем все origin.
 		AllowedOrigins: []string{"*"},
-		AllowedMethods: []string{"GET", "POST", "PATCH", "DELETE", "OPTIONS"},
+		AllowedMethods: []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
 		AllowedHeaders: []string{"Accept", "Authorization", "Content-Type"},
 	}))
 

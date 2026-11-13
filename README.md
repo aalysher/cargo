@@ -75,6 +75,19 @@ curl -s "localhost:${APP_PORT:-8085}/api/v1/admin/clients?q=SSZ" -H "Authorizati
 curl -s localhost:${APP_PORT:-8085}/api/v1/admin/settings -H "Authorization: Bearer $AT"
 ```
 
+## Админка (веб, часть 4)
+
+```sh
+npm --prefix web/admin install
+npm --prefix web/admin run dev      # http://localhost:5176
+npm --prefix web/admin run build    # tsc + vite → ~78 КБ gzip
+```
+
+- JWT-логин: `POST /api/v1/admin/auth/login` → токен (TTL 12ч) + профиль (роль).
+- Роль `operator` — заказы, треки, клиенты (чтение); роль `admin` — плюс правка тарифов и настроек.
+- Стек: React 19 + Vite 6 + Tailwind 3; в dev режиме допускается любой из демо-операторов.
+- Сборка — `npm run build` (TypeScript strict, 78 КБ gzip); dev-сервер — порт 5176.
+
 ## Telegram Mini App (web/tma)
 
 ```sh
@@ -100,4 +113,4 @@ npm --prefix web/tma run dev      # http://localhost:5175
 | 1 | Бэкенд-каркас: миграции, auth (Telegram initData), тарифы/калькулятор, заказы, outbox | ✅ |
 | 2 | Админ-API: login, статусы, вес, треки, тарифы, settings, клиенты | ✅ |
 | 3 | TMA: онбординг, главная, калькулятор, заявка, заказы, таймлайн | ✅ |
-| 4 | Админка (веб) + деплой | ⏳ |
+| 4 | Админка (веб) + деплой | ✅ (веб-админка готова; деплой — часть 5) |

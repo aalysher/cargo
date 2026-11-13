@@ -1,0 +1,42 @@
+@import "./styles/tokens.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-bg text-ink antialiased;
+    font-family: -apple-system, "SF Pro Text", Roboto, "Segoe UI", sans-serif;
+  }
+  .tnum { font-variant-numeric: tabular-nums; }
+}
+
+@layer components {
+  .badge {
+    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-micro uppercase tracking-wider;
+    background: rgba(100, 116, 139, 0.12);
+  }
+  .badge[data-st="new"]            { color: var(--st-new);       background: color-mix(in srgb, var(--st-new) 12%, transparent); }
+  .badge[data-st="accepted"]       { color: var(--st-accepted);  background: color-mix(in srgb, var(--st-accepted) 12%, transparent); }
+  .badge[data-st="at_warehouse_cn"]{ color: var(--st-warehouse); background: color-mix(in srgb, var(--st-warehouse) 12%, transparent); }
+  .badge[data-st="shipped"]        { color: var(--st-shipped);   background: color-mix(in srgb, var(--st-shipped) 12%, transparent); }
+  .badge[data-st="in_transit"]     { color: var(--st-transit);   background: color-mix(in srgb, var(--st-transit) 12%, transparent); }
+  .badge[data-st="arrived_kg"]     { color: var(--st-arrived);   background: color-mix(in srgb, var(--st-arrived) 12%, transparent); }
+  .badge[data-st="ready_for_pickup"] { color: var(--st-ready);   background: color-mix(in srgb, var(--st-ready) 12%, transparent); }
+  .badge[data-st="delivered"]      { color: var(--st-delivered); background: color-mix(in srgb, var(--st-delivered) 12%, transparent); }
+  .badge[data-st="cancelled"]      { color: var(--st-cancelled); background: color-mix(in srgb, var(--st-cancelled) 12%, transparent); }
+
+  .field {
+    @apply h-11 w-full rounded-md border border-line bg-surface px-3 text-body outline-none transition-colors;
+  }
+  .field:focus { border-color: var(--brand-500); box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-500) 15%, transparent); }
+  .field::placeholder { color: var(--text-muted); }
+
+  .btn {
+    @apply inline-flex h-10 items-center justify-center rounded-md px-4 text-body-strong transition-colors disabled:opacity-50;
+  }
+  .btn-primary { @apply bg-brand text-white hover:bg-brand-strong; }
+  .btn-secondary { @apply bg-surface-2 text-ink hover:bg-line; }
+  .btn-danger { @apply border border-danger bg-transparent text-danger hover:bg-surface-2; }
+}

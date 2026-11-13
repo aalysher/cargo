@@ -1,0 +1,32 @@
+/* Дизайн-токены — docs/04-ui-system.md */
+:root {
+  --brand-500: #2563EB; --brand-600: #1D4ED8;
+  --accent-500: #F97316;
+  --success-500: #16A34A; --warning-500: #D97706; --danger-500: #DC2626;
+  --bg: #F8FAFC; --surface: #FFFFFF; --surface-2: #F1F5F9;
+  --border: #E2E8F0;
+  --text: #0F172A; --text-muted: #64748B;
+  --overlay: rgba(15, 23, 42, 0.45);
+  --st-new: #64748B;      --st-accepted: #2563EB; --st-warehouse: #7C3AED;
+  --st-shipped: #D97706;  --st-transit: #F97316;  --st-arrived: #0D9488;
+  --st-ready: #16A34A;    --st-delivered: #15803D; --st-cancelled: #DC2626;
+  --r-sm: 8px; --r-md: 12px; --r-lg: 16px; --r-xl: 24px;
+  --shadow-1: 0 1px 2px rgba(15,23,42,.06);
+  --shadow-2: 0 4px 16px rgba(15,23,42,.08);
+  --shadow-3: 0 12px 32px rgba(15,23,42,.12);
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+[data-theme="dark"] {
+  --brand-500: #3B82F6; --brand-600: #60A5FA;
+  --accent-500: #FB923C;
+  --success-500: #22C55E; --warning-500: #FBBF24; --danger-500: #EF4444;
+  --bg: #0B1220; --surface: #111A2B; --surface-2: #18233A;
+  --border: #1E293B;
+  --text: #F1F5F9; --text-muted: #94A3B8;
+  --overlay: rgba(0, 0, 0, 0.6);
+  --st-new: #94A3B8; --st-accepted: #60A5FA; --st-warehouse: #A78BFA;
+  --st-shipped: #FBBF24; --st-transit: #FB923C; --st-arrived: #2DD4BF;
+  --st-ready: #22C55E; --st-delivered: #4ADE80; --st-cancelled: #EF4444;
+  --shadow-1: none; --shadow-2: none; --shadow-3: 0 12px 32px rgba(0,0,0,.5);
+}
