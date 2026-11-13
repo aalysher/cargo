@@ -1,0 +1,22 @@
+BEGIN;
+
+DROP TABLE IF EXISTS notifications;
+DROP TABLE IF EXISTS order_events;
+DROP TABLE IF EXISTS order_tracks;
+DROP TABLE IF EXISTS orders;
+DROP TABLE IF EXISTS tariffs;
+DROP TABLE IF EXISTS admin_users;
+DROP TABLE IF EXISTS clients;
+DROP TABLE IF EXISTS settings;
+
+DROP SEQUENCE IF EXISTS order_number_seq;
+
+DROP TYPE IF EXISTS order_source;
+DROP TYPE IF EXISTS admin_role;
+DROP TYPE IF EXISTS notif_status;
+DROP TYPE IF EXISTS actor_type;
+DROP TYPE IF EXISTS event_type;
+DROP TYPE IF EXISTS transport_type;
+DROP TYPE IF EXISTS order_status;
+
+COMMIT;
