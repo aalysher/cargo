@@ -1,0 +1,46 @@
+@import "./styles/tokens.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { -webkit-tap-highlight-color: transparent; }
+
+  body {
+    @apply bg-bg text-ink antialiased;
+    font-family: -apple-system, "SF Pro Text", Roboto, "Segoe UI", sans-serif;
+  }
+
+  /* Цены/вес — табличные цифры */
+  .tnum { font-variant-numeric: tabular-nums; }
+
+  input, textarea { font: inherit; }
+}
+
+@layer components {
+  /* Бейдж статуса: фон — цвет статуса @12% */
+  .badge {
+    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-micro uppercase tracking-wider;
+    background: rgba(100, 116, 139, 0.12);
+  }
+  .badge[data-st] {
+    color: var(--st-new);
+    background: color-mix(in srgb, var(--st-new) 12%, transparent);
+  }
+  .badge[data-st="accepted"]    { color: var(--st-accepted);   background: color-mix(in srgb, var(--st-accepted) 12%, transparent); }
+  .badge[data-st="at_warehouse_cn"] { color: var(--st-warehouse); background: color-mix(in srgb, var(--st-warehouse) 12%, transparent); }
+  .badge[data-st="shipped"]     { color: var(--st-shipped);    background: color-mix(in srgb, var(--st-shipped) 12%, transparent); }
+  .badge[data-st="in_transit"]  { color: var(--st-transit);    background: color-mix(in srgb, var(--st-transit) 12%, transparent); }
+  .badge[data-st="arrived_kg"]  { color: var(--st-arrived);    background: color-mix(in srgb, var(--st-arrived) 12%, transparent); }
+  .badge[data-st="ready_for_pickup"] { color: var(--st-ready); background: color-mix(in srgb, var(--st-ready) 12%, transparent); }
+  .badge[data-st="delivered"]   { color: var(--st-delivered);  background: color-mix(in srgb, var(--st-delivered) 12%, transparent); }
+  .badge[data-st="cancelled"]   { color: var(--st-cancelled);  background: color-mix(in srgb, var(--st-cancelled) 12%, transparent); }
+
+  /* Фокус форм */
+  .field {
+    @apply h-11 w-full rounded-md border border-line bg-surface px-3 text-body outline-none transition-colors;
+  }
+  .field:focus { border-color: var(--brand-500); box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-500) 15%, transparent); }
+  .field::placeholder { color: var(--text-muted); }
+}

@@ -16,3 +16,6 @@ pgdata/
 # IDE
 .idea/
 .vscode/
+
+# Playwright MCP тест-артефакты
+.playwright-mcp/

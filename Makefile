@@ -6,6 +6,12 @@ dev: ## запустить API (порт 8080, авто-миграции при 
 worker: ## запустить воркер уведомлений (outbox → Telegram)
 	go run ./cmd/worker
 
+tma: ## dev-сервер TMA (порт 5175)
+	npm --prefix web/tma run dev
+
+tma-build: ## сборка TMA (tsc + vite)
+	npm --prefix web/tma run build
+
 db-up: ## поднять Postgres
 	docker compose up -d db
 

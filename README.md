@@ -75,6 +75,18 @@ curl -s "localhost:${APP_PORT:-8085}/api/v1/admin/clients?q=SSZ" -H "Authorizati
 curl -s localhost:${APP_PORT:-8085}/api/v1/admin/settings -H "Authorization: Bearer $AT"
 ```
 
+## Telegram Mini App (web/tma)
+
+```sh
+npm --prefix web/tma install
+npm --prefix web/tma run dev      # http://localhost:5175
+```
+
+- Вне Telegram (браузер) вход автоматический через `POST /auth/dev` — личность хранится в localStorage.
+- Внутри Telegram: `initData` → `POST /auth/telegram`, тема и MainButton/BackButton подключены.
+- Боевой адрес API задаётся `VITE_API_URL` (по умолчанию `http://localhost:8085/api/v1`); сборка — `npm run build` (~83 КБ gzip).
+- Deep link из бота `t.me/<bot>?startapp=order_<id>` открывает карточку заказа.
+
 ## Прод (план)
 
 - `BOT_TOKEN` от @BotFather → уведомления ботом; `INIT_DATA_MAX_AGE_SECONDS=3600`.
@@ -87,5 +99,5 @@ curl -s localhost:${APP_PORT:-8085}/api/v1/admin/settings -H "Authorization: Bea
 |---|---|---|
 | 1 | Бэкенд-каркас: миграции, auth (Telegram initData), тарифы/калькулятор, заказы, outbox | ✅ |
 | 2 | Админ-API: login, статусы, вес, треки, тарифы, settings, клиенты | ✅ |
-| 3 | TMA: онбординг, главная, калькулятор, заявка, заказы, таймлайн | ⏳ |
+| 3 | TMA: онбординг, главная, калькулятор, заявка, заказы, таймлайн | ✅ |
 | 4 | Админка (веб) + деплой | ⏳ |
